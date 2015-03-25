@@ -56,8 +56,8 @@ options snd_hda_intel index=1
 ```
 
 The ALSA UCM configuration from Chromium OS is included in the repository
-in ucm/.  To inset the device to a useable initial state, run from the
-root of the repository:
+in ucm/.  To set the device to a useable initial state, run from the root
+of the repository:
 ```
 $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi
 ```
