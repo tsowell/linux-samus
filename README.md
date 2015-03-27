@@ -48,8 +48,8 @@ CONFIG_SND_SOC_RT5677
 CONFIG_SND_SOC_RT5677_SPI
 ```
 
-The SoC audio device shows up as the second ALSA device, so you might want
-want to add this to /etc/modprobe.d/alsa-base.conf to change the order:
+The SoC audio device shows up as the second ALSA device, so you might want to
+add this to /etc/modprobe.d/alsa-base.conf to change the order:
 ```
 options snd_soc_rt5677 index=0
 options snd_hda_intel index=1
