@@ -3,6 +3,10 @@ Chromebook Pixel 2015 (Samus) support borrowed from Chromium OS.  The
 patches are available in linux-samus for use with other distributions,
 but these patches are experimental.  Use them at your own risk.
 
+#### Installation
+
+The kernel package, linux-samus, is also available in the AUR.
+
 #### Touchpad and touchscreen
 
 Touchpad and touchscreen support is provided by
