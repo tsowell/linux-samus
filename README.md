@@ -7,9 +7,11 @@ but these patches are experimental.  Use them at your own risk.
 
 ##### Manual
 
+```
 $ git clone https://github.com/tsowell/arch-linux-samus
 $ cd arch-linux-samus/arch-linux
 $ makepkg -si
+```
 
 ##### From AUR
 
