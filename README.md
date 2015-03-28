@@ -5,7 +5,29 @@ but these patches are experimental.  Use them at your own risk.
 
 #### Installation
 
+##### Manual
+
+$ git clone https://github.com/tsowell/arch-linux-samus
+$ cd arch-linux-samus/arch-linux
+$ makepkg -si
+
+##### From AUR
+
 The kernel package, linux-samus, is also available in the AUR.
+
+##### Post-installation
+
+Edit /boot/grub/grub.cfg and change /boot/vmlinuz-linux to
+/boot/vmlinuz-linux-samus and /boot/initramfs-linux.img to
+/boot/initramfs-linux-samus.img.
+
+Reboot and follow the instructions to load the ALSA UCM and initialize the
+audio device state.
+
+NOTE: If you're running from an SD card (slow), your Pixel might appear to
+hang for a few minutes while it syncs to disk before rebooting.  I recommend
+running "sudo sync" manually before rebooting after a lot of disk activity
+(like building and installing a kernel package).
 
 #### Touchpad and touchscreen
 
@@ -65,7 +87,9 @@ of the repository:
 ```
 $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi
 ```
-The configuration will persist if you save and restore the ALSA state.
+The configuration will persist if you save and restore the ALSA state.  The
+alsa-utils package provides systemd services to do this on shutdown and on
+boot.
 
 ##### Issues
 
