@@ -1,52 +1,74 @@
-This is a quick-and-dirty Arch Linux package for the Linux kernel with
-Chromebook Pixel 2015 (Samus) support borrowed from Chromium OS.  The
-patches are available in linux-samus for use with other distributions,
-but these patches are experimental.  Use them at your own risk.
+### Linux kernel for Chromebook Pixel 2015 (Samus)
+
+This repository contains quick-and-dirty patches to mainline Linux with support
+for the Chromebook Pixel 2015 (Samus) borrowed from Chromium OS.  The kernel
+patches are in arch/linux-samus for use with other distributions.  Binary
+packages are available in the Releases section for Arch Linux and for Ubuntu.
+
+The Arch kernel package, linux-samus, is also available in the AUR.
 
 #### Installation
 
-##### Manual
+##### Ubuntu
+
+###### Install kernel packages
+
+Download the [release tarball for
+Ubuntu](https://github.com/tsowell/linux-samus/releases/download/v0.2.0/linux-samus-ubuntu-0.2.0.tar),
+untar it, and install the packages:
 
 ```
-$ git clone https://github.com/tsowell/arch-linux-samus
-$ cd arch-linux-samus/arch-linux
-$ makepkg -si
+$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.0/linux-samus-ubuntu-0.2.0.tar
+$ tar xvf linux-samus-ubuntu-0.2.0.tar
+$ cd linux-samus-ubuntu-0.2.0
+$ sudo dpkg -i *.deb
 ```
 
-##### From AUR
+###### Edit GRUB configuration
 
-The kernel package, linux-samus, is also available in the AUR.
+Set the linux-samus kernel as GRUB's default:
 
-##### Post-installation
+```
+sudo grub-set-default "Ubuntu, with Linux 3.19.0-11.11+samus-1-generic"
+sudo update-grub
+```
+
+###### Initialize the audio device state
+
+Reboot and then load the ALSA UCM (included in the release tarball) to
+initialize the audio device state:
+
+```
+$ cd linux-samus-ubuntu-0.2.0
+$ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi 
+```
+
+##### Arch
+
+###### Install kernel packages
+
+Download the [release tarball for
+Arch](https://github.com/tsowell/linux-samus/releases/download/v0.2.0/linux-samus-arch-0.2.0.tar),
+untar it, and install the packages:
+
+```
+$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.0/linux-samus-arch-0.2.0.tar
+$ tar xvf linux-samus-arch-0.2.0.tar
+$ cd linux-samus-arch-0.2.0
+$ sudo pacman -U *.pkg.tar.xz
+```
+
+###### Edit GRUB configuration
 
 Edit /boot/grub/grub.cfg and change /boot/vmlinuz-linux to
 /boot/vmlinuz-linux-samus and /boot/initramfs-linux.img to
 /boot/initramfs-linux-samus.img.
 
-Reboot and follow the instructions to load the ALSA UCM and initialize the
-audio device state.
-
-NOTE: If you're running from an SD card (slow), your Pixel might appear to
-hang for a few minutes while it syncs to disk before rebooting.  I recommend
-running "sudo sync" manually before rebooting after a lot of disk activity
-(like building and installing a kernel package).
-
-#### Touchpad and touchscreen
-
-Touchpad and touchscreen support is provided by
-linux-samus/chromiumos-samus-touchpad-touchscreen.patch.
-
-These kernel config flags should be set:
-```
-CONFIG_NVRAM
-CONFIG_ACPI_CHROMEOS
-CONFIG_CHROMEOS
-CONFIG_CHROMEOS_LAPTOP
-CONFIG_CHROMEOS_PSTORE
-```
+###### Configure Synaptics
 
 To use xf86-input-synaptics with the touchpad, you'll need at least the
 following in your xorg.conf.d:
+
 ```
 Section "InputClass"
     Identifier "touchpad"
@@ -56,10 +78,59 @@ Section "InputClass"
 EndSection
 ```
 
-#### Sound
+###### Change ALSA device order
+
+The SoC audio device shows up as the second ALSA device, so you might want to
+add this to /etc/modprobe.d/alsa-base.conf to change the order:
+
+```
+options snd_soc_rt5677 index=0
+options snd_hda_intel index=1
+```
+
+###### Initialize the audio device state
+
+Reboot and then load the ALSA UCM (included in the release tarball) to
+initialize the audio device state:
+
+```
+$ cd linux-samus-ubuntu-0.2.0
+$ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi 
+```
+
+NOTE: If you're running from an SD card (slow), your Pixel might appear to
+hang for a few minutes while it syncs to disk before rebooting.  I recommend
+running "sudo sync" manually before rebooting after a lot of disk activity
+(like building and installing a kernel package).
+
+###### Issues
+
+The master volume can be set, but not read, through the mixer interface.
+
+#### Keyboard backlight
+
+Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
+
+#### Patches
+
+##### Touchpad and touchscreen
+
+Touchpad and touchscreen support is provided by
+arch/linux-samus/chromiumos-samus-touchpad-touchscreen.patch.
+
+These kernel config flags should be set:
+```
+CONFIG_NVRAM (must be 'y', chromeos_acpi will not work with nvram as module)
+CONFIG_ACPI_CHROMEOS
+CONFIG_CHROMEOS
+CONFIG_CHROMEOS_LAPTOP
+CONFIG_CHROMEOS_PSTORE
+```
+
+##### Sound
 
 Sound support is provided by
-linux-samus/chromiumos-samus-sound.patch.
+arch/linux-samus/chromiumos-samus-sound.patch.
 
 These kernel config flags should be set:
 ```
@@ -76,37 +147,14 @@ CONFIG_SND_SOC_RT5677
 CONFIG_SND_SOC_RT5677_SPI
 ```
 
-The SoC audio device shows up as the second ALSA device, so you might want to
-add this to /etc/modprobe.d/alsa-base.conf to change the order:
-```
-options snd_soc_rt5677 index=0
-options snd_hda_intel index=1
-```
-
-The ALSA UCM configuration from Chromium OS is included in the repository
-in ucm/.  To set the device to a useable initial state, run from the root
-of the repository:
-```
-$ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi
-```
-The configuration will persist if you save and restore the ALSA state.  The
-alsa-utils package provides systemd services to do this on shutdown and on
-boot.
-
-##### Issues
-
-The master volume can be set, but not read, through the mixer interface.
-
-#### Keyboard backlight
+##### Keyboard backlight
 
 Keyboard backlight support is provided by
-linux-samus/chromiumos-samus-keyboard-backlight.patch.
+arch/linux-samus/chromiumos-samus-keyboard-backlight.patch.
 
 These kernel config flags should be set:
 ```
 CONFIG_BACKLIGHT_CHROMEOS_KEYBOARD
 CONFIG_LEDS_CHROMEOS_KEYBOARD
 ```
-
-Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
 
