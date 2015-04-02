@@ -113,6 +113,8 @@ Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
 
 #### Patches
 
+The patches in arch/linux-samus apply to Linux 3.19.2.
+
 ##### Touchpad and touchscreen
 
 Touchpad and touchscreen support is provided by
