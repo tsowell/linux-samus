@@ -1,9 +1,11 @@
 ### Linux kernel for Chromebook Pixel 2015 (Samus)
 
 This repository contains quick-and-dirty patches to mainline Linux with support
-for the Chromebook Pixel 2015 (Samus) borrowed from Chromium OS.  The kernel
-patches are in arch/linux-samus for use with other distributions.  Binary
-packages are available in the Releases section for Arch Linux and for Ubuntu.
+for the Chromebook Pixel 2015 (Samus) borrowed from Chromium OS.  This is
+useful as a stopgap until mainline has proper support for the harware.  The
+kernel patches are in arch/linux-samus for use with other distributions, and
+binary packages are available in the Releases section for Arch Linux and for
+Ubuntu.
 
 The Arch kernel package, linux-samus, is also available in the AUR.
 
