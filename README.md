@@ -94,7 +94,7 @@ Reboot and then load the ALSA UCM (included in the release tarball) to
 initialize the audio device state:
 
 ```
-$ cd linux-samus-ubuntu-0.2.0
+$ cd linux-samus-arch-0.2.0
 $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi 
 ```
 
