@@ -110,6 +110,40 @@ running "sudo sync" manually before rebooting after a lot of disk activity
 
 The master volume can be set, but not read, through the mixer interface.
 
+#### Sound
+
+##### Persisting state
+
+In Arch, alsa-utils provides systemd configuration files to save and restore
+the audio device state once the UCM has been applied to initialize it.  You can
+manually save the state with `alsactl store`.
+
+##### Headphone jack
+
+Audio must be rerouted in software from the internal speakers to the headphone
+jack when something is plugged in.  If you first install the UCM files by
+copying the directory `common/ucm/bdw-rt5677` to `/usr/share/alsa/ucm`, you can
+use, for example, `acpid` to do the routing automatically by adding this case
+to `/etc/acpi/handler.sh`:
+
+```
+    jack/headphone)
+        case "$3" in
+            plug)
+                logger "headphone plugged"
+                alsaucm -c bdw-rt5677 set _verb HiFi set _enadev Headphone
+                ;;
+            unplug)
+                logger "headphone unplugged"
+                alsaucm -c bdw-rt5677 set _verb HiFi set _disdev Headphone
+                ;;
+            *)
+                logger "ACPI action undefined: $3"
+                ;;
+        esac
+        ;;
+```
+
 #### Keyboard backlight
 
 Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
