@@ -63,9 +63,11 @@ $ sudo pacman -U *.pkg.tar.xz
 
 ###### Edit GRUB configuration
 
-Edit /boot/grub/grub.cfg and change /boot/vmlinuz-linux to
-/boot/vmlinuz-linux-samus and /boot/initramfs-linux.img to
-/boot/initramfs-linux-samus.img.
+Generate a new grub.cfg with grub-mkconfig:
+
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
 
 ###### Configure Synaptics
 
