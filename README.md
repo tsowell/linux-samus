@@ -17,13 +17,13 @@ The Arch kernel package, linux-samus, is also available in the AUR.
 ###### Install kernel packages
 
 Download the [release tarball for
-Ubuntu](https://github.com/tsowell/linux-samus/releases/download/v0.2.1/linux-samus-ubuntu-0.2.1.tar),
+Ubuntu](https://github.com/tsowell/linux-samus/releases/download/v0.2.2/linux-samus-ubuntu-0.2.2.tar),
 untar it, and install the packages:
 
 ```
-$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.1/linux-samus-ubuntu-0.2.1.tar
-$ tar xvf linux-samus-ubuntu-0.2.1.tar
-$ cd linux-samus-ubuntu-0.2.1
+$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.2/linux-samus-ubuntu-0.2.2.tar
+$ tar xvf linux-samus-ubuntu-0.2.2.tar
+$ cd linux-samus-ubuntu-0.2.2
 $ sudo dpkg -i *.deb
 ```
 
@@ -42,7 +42,7 @@ Reboot and then load the ALSA UCM (included in the release tarball) to
 initialize the audio device state:
 
 ```
-$ cd linux-samus-ubuntu-0.2.1
+$ cd linux-samus-ubuntu-0.2.2
 $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi 
 ```
 
@@ -51,13 +51,13 @@ $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi
 ###### Install kernel packages
 
 Download the [release tarball for
-Arch](https://github.com/tsowell/linux-samus/releases/download/v0.2.1/linux-samus-arch-0.2.1.tar),
+Arch](https://github.com/tsowell/linux-samus/releases/download/v0.2.2/linux-samus-arch-0.2.2.tar),
 untar it, and install the packages:
 
 ```
-$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.1/linux-samus-arch-0.2.1.tar
-$ tar xvf linux-samus-arch-0.2.1.tar
-$ cd linux-samus-arch-0.2.1
+$ curl -LO https://github.com/tsowell/linux-samus/releases/download/v0.2.2/linux-samus-arch-0.2.2.tar
+$ tar xvf linux-samus-arch-0.2.2.tar
+$ cd linux-samus-arch-0.2.2
 $ sudo pacman -U *.pkg.tar.xz
 ```
 
@@ -99,7 +99,7 @@ Reboot and then load the ALSA UCM (included in the release tarball) to
 initialize the audio device state:
 
 ```
-$ cd linux-samus-arch-0.2.1
+$ cd linux-samus-arch-0.2.2
 $ ALSA_CONFIG_UCM=ucm/ alsaucm -c bdw-rt5677 set _verb HiFi 
 ```
 
