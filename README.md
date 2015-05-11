@@ -274,4 +274,27 @@ These kernel config flags should be set:
 CONFIG_BACKLIGHT_CHROMEOS_KEYBOARD
 CONFIG_LEDS_CHROMEOS_KEYBOARD
 ```
+###Applying Patches
+
+#####Grub
+<!---
+Taken directly from the Arch Wiki: https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB
+-->
+
+Edit `/etc/default/grub` and append your kernel options to the GRUB_CMDLINE_LINUX_DEFAULT line:
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+```
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash CONFIG_BACKLIGHT_CHROMEOS_KEYBOARD"
+```
+
+And then automatically re-generate the grub.cfg file with:
+
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
 
