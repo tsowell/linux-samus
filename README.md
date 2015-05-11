@@ -150,6 +150,59 @@ to `/etc/acpi/handler.sh`:
 
 Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
 
+
+By default users other than root are not permitted to write to `/sys/class/leds/chromeos::kbd_backlight/brightness` so we must first change the file's permissions.
+```
+chown $USER:wheel /sys/class/leds/chromeos::kbd_backlight/brightness 
+```
+
+We can then use a script to incrementally increase or decrease the keyboard backlight. Save the following file to your home directory:`~/.config/kb-backlight.sh`
+
+
+```
+#!/bin/bash
+
+# ~/.config/kb-backlight.sh
+
+step=10
+file=/sys/class/leds/chromeos::kbd_backlight/brightness
+
+case "$1" in
+    -i|--increase) ((val = +step));;
+    -d|--decrease) ((val = -step));;
+esac
+
+if !((val)); then
+    echo "Increase or decrease screen brighness"
+    echo "Usage: ${0##*/} --increase | --decrease"
+    exit
+fi
+
+read -r cur < "$file"    
+((val = cur + val))
+
+if ((val <   0)); then ((val =   0)); fi
+if ((val > 100)); then ((val = 100)); fi
+
+printf '%d' "$val" > "$file"
+
+printf ""$val"\n"
+```
+
+Make the file executable
+```
+chmod +x $HOME/.config/kb-backlight.sh
+```
+
+Now you can now control the keyboard backlight with the following two commands. Bind each command to your keyboard with your preferred program/method.
+
+```
+$HOME/.config/kb-backlight.sh --increase
+```
+```
+$HOME/.config/kb-backlight.sh --decrease
+```
+
 #### Patches
 
 The patches in arch/linux-samus apply to Linux 3.19.2.
