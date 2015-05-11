@@ -72,7 +72,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ###### Configure Synaptics
 
 To use xf86-input-synaptics with the touchpad, you'll need at least the
-following in your xorg.conf.d:
+following in `/etc/X11/xorg.conf.d/50-synaptics.conf`:
 
 ```
 Section "InputClass"
@@ -82,6 +82,29 @@ Section "InputClass"
     Driver "synaptics"
 EndSection
 ```
+
+Example configuration with additional features enabled
+```
+Section "InputClass"
+	Identifier "touchpad"
+	MatchIsTouchpad "on"
+	MatchDevicePath "/dev/input/event*"
+	Driver "synaptics"
+	Option "TapButton1" "1"
+	Option "TapButton2" "3"
+	Option "TapButton3" "3"
+	Option "FingerLow" "5"
+	Option "FingerHigh" "10"
+   	Option "VertEdgeScroll" "on"
+   	Option "VertTwoFingerScroll" "on"
+   	Option "HorizEdgeScroll" "on"
+   	Option "HorizTwoFingerScroll" "on"
+EndSection
+```
+
+
+
+
 
 ###### Change ALSA device order
 
