@@ -1,3 +1,9 @@
+## Notice
+
+This project briefly supported Linux 3.x and is no longer maintained.  Please
+refer to [Raphaël Simon's repository](https://github.com/raphael/linux-samus)
+for a proper 4.x treatment.
+
 ### Linux kernel for Chromebook Pixel 2015 (Samus)
 
 This repository contains quick-and-dirty patches to mainline Linux with support
