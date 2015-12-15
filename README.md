@@ -78,7 +78,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ###### Configure Synaptics
 
 To use xf86-input-synaptics with the touchpad, you'll need at least the
-following in your xorg.conf.d:
+following in `/etc/X11/xorg.conf.d/50-synaptics.conf`:
 
 ```
 Section "InputClass"
@@ -88,6 +88,29 @@ Section "InputClass"
     Driver "synaptics"
 EndSection
 ```
+
+Example configuration with additional features enabled
+```
+Section "InputClass"
+	Identifier "touchpad"
+	MatchIsTouchpad "on"
+	MatchDevicePath "/dev/input/event*"
+	Driver "synaptics"
+	Option "TapButton1" "1"
+	Option "TapButton2" "3"
+	Option "TapButton3" "3"
+	Option "FingerLow" "5"
+	Option "FingerHigh" "10"
+   	Option "VertEdgeScroll" "on"
+   	Option "VertTwoFingerScroll" "on"
+   	Option "HorizEdgeScroll" "on"
+   	Option "HorizTwoFingerScroll" "on"
+EndSection
+```
+
+
+
+
 
 ###### Change ALSA device order
 
@@ -156,6 +179,59 @@ to `/etc/acpi/handler.sh`:
 
 Brightness can be controlled through /sys/class/leds/chromeos::kbd_backlight.
 
+
+By default users other than root are not permitted to write to `/sys/class/leds/chromeos::kbd_backlight/brightness` so we must first change the file's permissions.
+```
+chown $USER:wheel /sys/class/leds/chromeos::kbd_backlight/brightness 
+```
+
+We can then use a script to incrementally increase or decrease the keyboard backlight. Save the following file to your home directory:`~/.config/kb-backlight.sh`
+
+
+```
+#!/bin/bash
+
+# ~/.config/kb-backlight.sh
+
+step=10
+file=/sys/class/leds/chromeos::kbd_backlight/brightness
+
+case "$1" in
+    -i|--increase) ((val = +step));;
+    -d|--decrease) ((val = -step));;
+esac
+
+if !((val)); then
+    echo "Increase or decrease screen brighness"
+    echo "Usage: ${0##*/} --increase | --decrease"
+    exit
+fi
+
+read -r cur < "$file"    
+((val = cur + val))
+
+if ((val <   0)); then ((val =   0)); fi
+if ((val > 100)); then ((val = 100)); fi
+
+printf '%d' "$val" > "$file"
+
+printf ""$val"\n"
+```
+
+Make the file executable
+```
+chmod +x $HOME/.config/kb-backlight.sh
+```
+
+Now you can now control the keyboard backlight with the following two commands. Bind each command to your keyboard with your preferred program/method.
+
+```
+$HOME/.config/kb-backlight.sh --increase
+```
+```
+$HOME/.config/kb-backlight.sh --decrease
+```
+
 #### Patches
 
 The patches in arch/linux-samus apply to Linux 3.19.2.
@@ -204,4 +280,27 @@ These kernel config flags should be set:
 CONFIG_BACKLIGHT_CHROMEOS_KEYBOARD
 CONFIG_LEDS_CHROMEOS_KEYBOARD
 ```
+###Applying Patches
+
+#####Grub
+<!---
+Taken directly from the Arch Wiki: https://wiki.archlinux.org/index.php/Kernel_parameters#GRUB
+-->
+
+Edit `/etc/default/grub` and append your kernel options to the GRUB_CMDLINE_LINUX_DEFAULT line:
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+```
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash CONFIG_BACKLIGHT_CHROMEOS_KEYBOARD"
+```
+
+And then automatically re-generate the grub.cfg file with:
+
+```
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
 
